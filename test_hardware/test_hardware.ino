@@ -5,8 +5,11 @@
 // aansluitingen
 byte led = 9;  // groene led
 byte sensor = 12; // optocoupler sensor
-byte relay = 2; // actuator
+byte relay = 4; // actuator
+byte encoder = 2;
 byte onboard_led = 13; // led op arduino zelf
+volatile unsigned int encoderPulses = 0;
+
 
 // deze functie wordt altijd uitgevoerd nadat de arduino opgestart is
 void setup() {                
@@ -14,29 +17,30 @@ void setup() {
   pinMode(led, OUTPUT);     
   pinMode(relay, OUTPUT);
   pinMode(sensor, INPUT);
+  pinMode(encoder, INPUT);
+  Serial.begin(19200); // start seriele poort
+  
+  attachInterrupt(0,countPulse, RISING); 
   
  
 }
 // hoofdprogramma, wordt herhaald
 void loop() {
   
-  for (int i=0; i<10; i++)
-  {
-    digitalWrite(led,HIGH);
-    delay(50); 
-    digitalWrite(led,LOW);
-    delay(50);  
-  }
-  
- 
-  while (digitalRead(sensor)==1) {} // herhaal terwijl sensor = 1
- 
+   // set current state to the leds
+   digitalWrite(led,digitalRead(sensor));
+   digitalWrite(onboard_led, digitalRead(encoder));
+   
+   Serial.println(encoderPulses);
+   
+   delay(1000);
+   
 
-  
-  digitalWrite(relay, HIGH);    // laat bal los
-  delay(500);               // wacht ingestelde tijd in ms
-  digitalWrite(relay, LOW); // stop met actueren
-  
+ 
 }
 
-
+void countPulse() {
+ 
+ encoderPulses++; 
+  
+}
