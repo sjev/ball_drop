@@ -1,19 +1,20 @@
 /*
-  Voorbeeld code voor jetnet slinger
+  Example code to test hardware
+  used with Arduino Nano
  */
  
-// aansluitingen
-byte led = 9;  // groene led
-byte sensor = 12; // optocoupler sensor
-byte relay = 4; // actuator
-byte encoder = 2;
-byte onboard_led = 13; // led op arduino zelf
+// connections
+#define led 9  
+#define sensor 12
+#define relay 4
+#define encoder 2
+#define onboard_led  13
+
 volatile unsigned int encoderPulses = 0;
 
 
-// deze functie wordt altijd uitgevoerd nadat de arduino opgestart is
 void setup() {                
-  // configureer de pinnen
+  // configuration
   pinMode(led, OUTPUT);     
   pinMode(relay, OUTPUT);
   pinMode(sensor, INPUT);
@@ -24,12 +25,17 @@ void setup() {
   
  
 }
-// hoofdprogramma, wordt herhaald
+// main loop
 void loop() {
   
    // set current state to the leds
    digitalWrite(led,digitalRead(sensor));
    digitalWrite(onboard_led, digitalRead(encoder));
+   
+   if (digitalRead(sensor))
+   {
+     encoderPulses = 0;
+   }
    
    Serial.println(encoderPulses);
    
@@ -40,7 +46,7 @@ void loop() {
 }
 
 void countPulse() {
- 
+// interrupt routine 
  encoderPulses++; 
   
 }
