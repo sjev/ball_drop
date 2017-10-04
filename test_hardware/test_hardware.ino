@@ -10,6 +10,9 @@
 #define encoder 2
 #define onboard_led  13
 
+//number of pulses to wait until drop
+#define DROP_AFTER 20 
+
 volatile unsigned int encoderPulses = 0;
 
 
@@ -39,7 +42,12 @@ void loop() {
    
    Serial.println(encoderPulses);
    
-   delay(1000);
+   if (encoderPulses >= DROP_AFTER){
+     digitalWrite(relay, HIGH);
+     delay(1000);
+     digitalWrite(relay, LOW);
+     encoderPulses = 0;
+   }
    
 
  
