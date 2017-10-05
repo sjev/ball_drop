@@ -34,28 +34,32 @@ void setup() {
 void loop() {
   
    // set current state to the leds
-   digitalWrite(led,digitalRead(sensor));
-   digitalWrite(onboard_led, digitalRead(encoder));
+  digitalWrite(onboard_led, digitalRead(encoder));
 
    // reset counter
    if (digitalRead(sensor))
    {
-     encoderPulses = 0;
-     oldCount = 0;
+     resetCount();
    }
 
    // toggle led if count incremented
    if (oldCount<encoderPulses){
      digitalWrite(led,!digitalRead(led));
+     oldCount = encoderPulses;
    }
-   
-   Serial.println(encoderPulses);
+
+
+   //Serial.println(encoderPulses);
    
    if (encoderPulses >= DROP_AFTER){
      digitalWrite(relay, HIGH);
      delay(1000);
      digitalWrite(relay, LOW);
-     encoderPulses = 0;
+     resetCount();
+
+     digitalWrite(led,HIGH);
+     // wait for sensor to reset counts
+     while (digitalRead(sensor)==0) {}
    }
    
 
@@ -67,3 +71,20 @@ void countPulse() {
  encoderPulses++; 
   
 }
+
+void resetCount(){
+// reset counters, prepare for start
+ 
+     encoderPulses = 0;
+     oldCount = 0;
+     Serial.println("Resetting count");
+     // blink led as confirmation
+     digitalWrite(led,LOW);
+     for (int i=0; i<2; i++){
+        digitalWrite(led,!digitalRead(led));
+        delay(100);
+     }
+
+}
+
+
