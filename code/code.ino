@@ -13,7 +13,8 @@
 
 
 //number of pulses to wait until drop
-#define DROP_AFTER 200 
+// 13.09 mm/count
+#define DROP_AFTER 380 
 
 volatile unsigned int encoderPulses = 0;
 unsigned int oldCount = 0;
